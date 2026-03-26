@@ -41,6 +41,26 @@ A multi-agent system where 4 AI agents collaborate to research any topic and pro
 
 ---
 
+## Why No Framework?
+
+This project is intentionally built **from scratch without any agentic framework** (no LangGraph, no CrewAI, no AutoGen, no Strands).
+
+**Why?** Because frameworks hide the core patterns behind abstractions. You learn the framework's API, not how agents actually work. This project shows you the raw mechanics:
+
+| What You'll See | How It's Built |
+|----------------|----------------|
+| Agent orchestration | A Python function that generates a plan and loops through steps |
+| Agent communication | Passing Python dicts between functions (local) or HTTPS calls (deployed) |
+| Context threading | Manually accumulating each agent's output and passing it to the next |
+| LLM calls | Direct API calls to Groq/Gemini/Bedrock - no wrapper layers |
+| Tool use | Plain Python functions that return data |
+
+**The entire multi-agent system is ~600 lines of Python.** Every line is readable and traceable.
+
+> **Learn the patterns first, adopt a framework later.** Once you understand how orchestration, planning, context passing, and tool use work at the raw level, picking up LangGraph or CrewAI becomes much easier - you'll know exactly what the framework is doing under the hood.
+
+---
+
 ## Two Learning Phases
 
 This project has two phases. **You don't need AWS to start.**
