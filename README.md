@@ -43,13 +43,20 @@ A multi-agent system where 4 AI agents collaborate to research any topic and pro
 
 ## Two Learning Phases
 
-> **Phase 1 - Learn locally (free, no AWS needed):**
-> Use Groq or Gemini as your LLM provider. Build, test, and understand how multi-agent systems work - all on your local machine with a free API key.
->
-> **Phase 2 - Deploy to production (AWS required):**
-> When you're ready, deploy your agents to AWS Bedrock AgentCore. This gives you auto-scaling, persistent memory, and production-grade Claude Sonnet 4. AgentCore deployment requires an AWS account with Bedrock access.
->
-> **Start with Phase 1.** You can always add AWS later.
+This project has two phases. **You don't need AWS to start.**
+
+| | Phase 1 - Learn Locally | Phase 2 - Deploy to AWS |
+|--|------------------------|------------------------|
+| **What** | Run all agents on your laptop as a single Python process | Deploy each agent to AWS Bedrock AgentCore (serverless microVMs) |
+| **LLM Provider** | Groq or Gemini (free API key) | AWS Bedrock (Claude Sonnet 4, pay-per-use) |
+| **AgentCore** | Not used | Used - each agent runs in its own isolated microVM |
+| **AWS Account** | Not needed | Required (with Bedrock model access) |
+| **Agent Communication** | Direct Python function calls | A2A protocol over HTTPS |
+| **Memory** | In-memory (lost on restart) | AgentCore Memory (persistent across sessions) |
+| **Cost** | Free | ~$0.01-0.05 per request (mostly LLM token costs) |
+| **Best for** | Learning, building, testing | Production, multi-user, auto-scaling |
+
+> **Start with Phase 1.** Build and test your multi-agent system for free. When you're ready for production, Phase 2 adds AgentCore's auto-scaling, persistent memory, and enterprise-grade infrastructure.
 
 ---
 
@@ -302,17 +309,6 @@ bash scripts/cleanup.sh
 cd deploy/terraform
 terraform destroy -var="aws_region=us-east-1"
 ```
-
-### Local Mode vs Deployed Mode
-
-| Feature | Local Mode | Deployed (AgentCore) |
-|---------|-----------|---------------------|
-| How agents run | All in one Python process | Each agent in isolated microVM |
-| Communication | Direct function calls | A2A protocol over HTTPS |
-| Memory | In-memory (lost on restart) | AgentCore Memory (persistent) |
-| Scaling | Single machine | Auto-scales 0 to 1000s |
-| Cost | Just LLM API calls | AgentCore Runtime + LLM API |
-| Best for | Development, testing | Production, multi-user |
 
 ---
 
