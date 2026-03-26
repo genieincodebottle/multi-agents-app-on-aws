@@ -67,7 +67,7 @@ if command -v agentcore &> /dev/null; then
         echo -e "${YELLOW}⊘ No deployed agents found (use 'bash scripts/deploy.sh' to deploy)${NC}"
     fi
 else
-    echo -e "${YELLOW}⊘ agentcore CLI not installed (pip install bedrock-agentcore-starter-toolkit)${NC}"
+    echo -e "${YELLOW}⊘ agentcore CLI not installed (uv pip install bedrock-agentcore-starter-toolkit)${NC}"
 fi
 
 echo ""
