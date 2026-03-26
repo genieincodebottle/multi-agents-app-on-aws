@@ -33,6 +33,19 @@ PYTHON=$(command -v python3 || command -v python)
 PY_VERSION=$($PYTHON --version 2>&1 | grep -oP '\d+\.\d+')
 echo -e "  ${GREEN}✓${NC} Python $PY_VERSION found"
 
+# uv
+if ! command -v uv &> /dev/null; then
+    echo -e "${YELLOW}uv not found. Installing...${NC}"
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Reload PATH
+    export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+    if ! command -v uv &> /dev/null; then
+        echo -e "${RED}ERROR: uv installation failed. Install manually: https://docs.astral.sh/uv/getting-started/installation/${NC}"
+        exit 1
+    fi
+fi
+echo -e "  ${GREEN}✓${NC} uv $(uv --version) found"
+
 # AWS CLI
 if ! command -v aws &> /dev/null; then
     echo -e "${RED}ERROR: AWS CLI v2 is required. Install from https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html${NC}"
@@ -44,7 +57,7 @@ echo -e "  ${GREEN}✓${NC} AWS CLI found"
 if ! aws sts get-caller-identity &> /dev/null; then
     echo -e "${YELLOW}WARNING: AWS credentials not configured. Run 'aws configure' first.${NC}"
     echo "  You need: Access Key ID, Secret Access Key, Region (us-east-1)"
-    echo "  Get credentials: https://console.aws.amazon.com/iam/ -> Users -> Security Credentials"
+    echo "  See README.md 'Prerequisites Setup' for step-by-step instructions."
     exit 1
 fi
 
@@ -59,15 +72,15 @@ echo -e "  ${GREEN}✓${NC} AWS credentials valid (Account: $AWS_ACCOUNT, Region
 echo ""
 echo "Setting up Python virtual environment..."
 
-if [ ! -d "venv" ]; then
-    $PYTHON -m venv venv
-    echo -e "  ${GREEN}✓${NC} Virtual environment created"
+if [ ! -d ".venv" ]; then
+    uv venv
+    echo -e "  ${GREEN}✓${NC} Virtual environment created (.venv/)"
 else
     echo -e "  ${GREEN}✓${NC} Virtual environment already exists"
 fi
 
 # Activate
-source venv/bin/activate 2>/dev/null || source venv/Scripts/activate 2>/dev/null
+source .venv/bin/activate 2>/dev/null || source .venv/Scripts/activate 2>/dev/null
 echo -e "  ${GREEN}✓${NC} Virtual environment activated"
 
 # ---------------------------------------------------------------------------
@@ -76,8 +89,7 @@ echo -e "  ${GREEN}✓${NC} Virtual environment activated"
 
 echo ""
 echo "Installing Python dependencies..."
-pip install --upgrade pip -q
-pip install -r requirements.txt -q
+uv pip install -r requirements.txt -q
 echo -e "  ${GREEN}✓${NC} Dependencies installed"
 
 # ---------------------------------------------------------------------------
@@ -118,9 +130,9 @@ echo -e "  ${GREEN}Setup complete!${NC}"
 echo "========================================="
 echo ""
 echo "Next steps:"
-echo "  1. Activate venv:  source venv/bin/activate"
+echo "  1. Activate venv:  source .venv/bin/activate"
 echo "  2. (Optional) Edit .env to add TAVILY_API_KEY"
 echo "  3. Run locally:    python -m agents.orchestrator --query 'your question'"
-echo "  4. Run UI:         cd ui && streamlit run app.py"
+echo "  4. Run UI:         streamlit run ui/app.py"
 echo "  5. Deploy to AWS:  bash scripts/deploy.sh"
 echo ""

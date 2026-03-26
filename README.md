@@ -50,16 +50,154 @@ A multi-agent system where 4 AI agents collaborate to research any topic and pro
 
 ---
 
+## Prerequisites Setup (Do This First)
+
+Follow each step below. By the end, you'll have everything needed to run the project.
+
+### Step 1: Install Python 3.10+
+
+**Check if you already have it:**
+```bash
+python --version
+# or
+python3 --version
+```
+
+If you see `Python 3.10.x` or higher, skip to Step 2.
+
+**Install Python:**
+1. Go to [python.org/downloads](https://python.org/downloads)
+2. Download the latest Python (3.12+ recommended)
+3. **Windows**: Run the installer. **Check "Add Python to PATH"** at the bottom of the first screen before clicking Install
+4. **Mac**: Run the `.pkg` installer
+5. **Linux**: `sudo apt update && sudo apt install python3 python3-pip` (Ubuntu/Debian) or `sudo dnf install python3` (Fedora)
+
+**Verify:**
+```bash
+python --version   # Should show Python 3.10+
+```
+
+### Step 2: Install uv (Fast Python Package Manager)
+
+[uv](https://docs.astral.sh/uv/) is a blazing-fast Python package manager written in Rust. It replaces `pip` and `venv` with a single tool.
+
+```bash
+# Linux / Mac
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Or with pip (any platform)
+pip install uv
+```
+
+**Verify:**
+```bash
+uv --version   # Should show uv 0.x.x
+```
+
+### Step 3: Install AWS CLI v2
+
+**Check if you already have it:**
+```bash
+aws --version   # Should show aws-cli/2.x.x
+```
+
+If you see version 2.x, skip to Step 4.
+
+**Install AWS CLI v2:**
+- **Windows**: Download and run [AWSCLIV2.msi](https://awscli.amazonaws.com/AWSCLIV2.msi)
+- **Mac**: Download and run [AWSCLIV2.pkg](https://awscli.amazonaws.com/AWSCLIV2.pkg)
+- **Linux**:
+  ```bash
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  ```
+
+**Verify:**
+```bash
+aws --version   # Should show aws-cli/2.x.x
+```
+
+### Step 4: Create an AWS Account (Skip If You Already Have One)
+
+1. Go to [aws.amazon.com/free](https://aws.amazon.com/free) and click **"Create a Free Account"**
+2. Enter your email, choose an account name, and verify your email
+3. Choose **"Personal"** account type
+4. Enter your payment details (required, but Free Tier won't charge you for small usage)
+5. Complete phone verification
+6. Select the **"Basic Support - Free"** plan
+7. Sign in to the [AWS Console](https://console.aws.amazon.com/) with your new account
+
+### Step 5: Create an IAM User and Get Access Keys
+
+Your AWS account has a "root" login, but for security you should create a separate IAM user for programmatic access.
+
+1. Sign in to [AWS Console](https://console.aws.amazon.com/)
+2. Go to **IAM** (search "IAM" in the top search bar)
+3. Click **"Users"** in the left sidebar, then **"Create user"**
+4. **User name**: `bedrock-agent-user` (or any name you prefer)
+5. Click **"Next"**
+6. Select **"Attach policies directly"**
+7. Search and check these two policies:
+   - `AmazonBedrockFullAccess`
+   - `IAMFullAccess` (needed for AgentCore deployment only, skip if just running locally)
+8. Click **"Next"**, then **"Create user"**
+9. Click on the user you just created
+10. Go to the **"Security credentials"** tab
+11. Scroll down to **"Access keys"**, click **"Create access key"**
+12. Select **"Command Line Interface (CLI)"**
+13. Check the confirmation box, click **"Next"**, then **"Create access key"**
+14. **Save both keys now** - you won't be able to see the Secret Access Key again:
+    - `Access key ID` (looks like: `AKIA...`)
+    - `Secret access key` (looks like: `wJalrXUtnF...`)
+
+### Step 6: Configure AWS CLI
+
+```bash
+aws configure
+```
+
+It will ask for 4 values. Enter them one at a time:
+
+```
+AWS Access Key ID [None]: AKIA...YOUR_ACCESS_KEY...
+AWS Secret Access Key [None]: wJalrXUtnF...YOUR_SECRET_KEY...
+Default region name [None]: us-east-1
+Default output format [None]: json
+```
+
+**Verify it works:**
+```bash
+aws sts get-caller-identity
+```
+
+You should see something like:
+```json
+{
+    "UserId": "AIDA...",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/bedrock-agent-user"
+}
+```
+
+> If you see an error, double-check your Access Key and Secret Key. The most common mistake is a trailing space when pasting.
+
+### Step 7: Enable Bedrock Models
+
+1. Go to [Amazon Bedrock Model Access](https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/modelaccess)
+2. Click **"Manage model access"** (or **"Modify model access"**)
+3. Find **"Anthropic"** section, check **"Claude Sonnet 4"**
+4. Click **"Request model access"** (or **"Save changes"**)
+5. Wait for the status to show **"Access granted"** (usually instant)
+
+> **Can't find Claude?** Make sure you're in the **us-east-1** region (check the top-right dropdown in the AWS Console). If Claude is unavailable, you can use **Amazon Nova Lite** instead - it's always available and much cheaper. Just change the model in `.env` later.
+
+---
+
 ## Quick Start (Local Development)
-
-### Prerequisites
-
-| Requirement | How to Get It |
-|------------|---------------|
-| Python 3.10+ | [python.org/downloads](https://python.org/downloads) |
-| AWS Account | [aws.amazon.com/free](https://aws.amazon.com/free) (Free Tier works) |
-| AWS CLI v2 | [Install Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) |
-| Bedrock Model Access | Enable Claude Sonnet in [Bedrock Console](https://console.aws.amazon.com/bedrock/home#/modelaccess) |
 
 ### Step 1: Clone and Install
 
@@ -67,47 +205,30 @@ A multi-agent system where 4 AI agents collaborate to research any topic and pro
 git clone https://github.com/genieincodebottle/multi-agents-app-on-aws.git
 cd multi-agents-app-on-aws
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate        # Linux/Mac
-# venv\Scripts\activate          # Windows
+# Create virtual environment and install dependencies
+uv venv
+source .venv/bin/activate        # Linux/Mac
+# .venv\Scripts\activate          # Windows
 
 # Install dependencies
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
-### Step 2: Configure AWS
-
-```bash
-# Configure AWS credentials (if not already done)
-aws configure
-# Enter: Access Key ID, Secret Access Key, Region (us-east-1), Output (json)
-```
-
-> **Don't have AWS credentials?** Go to [IAM Console](https://console.aws.amazon.com/iam/) -> Users -> Create User -> Attach `AmazonBedrockFullAccess` + `BedrockAgentCoreFullAccess` policies -> Create Access Key.
-
-### Step 3: Enable Bedrock Models
-
-Go to [Amazon Bedrock Model Access](https://console.aws.amazon.com/bedrock/home#/modelaccess) and enable:
-- **Anthropic Claude Sonnet 4** (`us.anthropic.claude-sonnet-4-20250514-v1:0`)
-
-> Model access approval is instant for most models. If Claude is not available in your region, you can change the model in `.env` (see Configuration section).
-
-### Step 4: Set Up Environment
+### Step 2: Set Up Environment
 
 ```bash
 cp .env.example .env
 # Edit .env with your preferences (defaults work for most users)
 ```
 
-### Step 5: Run Locally
+### Step 3: Run Locally
 
 ```bash
 # Option A: Quick test from command line
 python -m agents.orchestrator --query "Compare Python vs Rust for AI development"
 
 # Option B: Run the Streamlit UI (web interface)
-pip install -r ui/requirements.txt
+uv pip install -r ui/requirements.txt
 streamlit run ui/app.py
 ```
 
@@ -115,7 +236,7 @@ streamlit run ui/app.py
 
 > **Billing error?** If you see `INVALID_PAYMENT_INSTRUMENT`, add a payment method at [AWS Billing Console](https://console.aws.amazon.com/billing/) and retry after 2 minutes.
 
-### Step 6: Test It
+### Step 4: Test It
 
 ```bash
 # Test with a simple query
@@ -141,7 +262,7 @@ Once you've tested locally, deploy to AWS AgentCore for production use.
 
 ```bash
 # Install AgentCore CLI
-pip install bedrock-agentcore-starter-toolkit
+uv pip install bedrock-agentcore-starter-toolkit
 ```
 
 ### Option A: One-Command Deploy (Recommended for Beginners)
@@ -425,9 +546,10 @@ result = agent.invoke({"messages": [("user", "Research AI frameworks")]})
 | `NoCredentialsError` | Run `aws configure` or set `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` |
 | `ResourceNotFoundException` for model | Check `AWS_REGION` - Claude models available in us-east-1, us-west-2, eu-west-1 |
 | `ThrottlingException` | You've hit rate limits. Add `time.sleep(1)` between calls or request limit increase |
-| `agentcore: command not found` | Run `pip install bedrock-agentcore-starter-toolkit` |
+| `agentcore: command not found` | Run `uv pip install bedrock-agentcore-starter-toolkit` |
 | Agents timeout during deploy | Increase timeout: `agentcore configure --timeout 300` |
 | Web search returns empty | Get a free Tavily API key at [tavily.com](https://tavily.com) and set `TAVILY_API_KEY` |
+| `uv: command not found` | Install uv: `curl -LsSf https://astral.sh/uv/install.sh \| sh` (see Prerequisites) |
 
 ---
 
@@ -464,6 +586,7 @@ terraform destroy -var="aws_region=us-east-1"
 - [AgentCore SDK (GitHub)](https://github.com/aws/bedrock-agentcore-sdk-python)
 - [AgentCore Samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples)
 - [Strands Agents Framework](https://github.com/strands-agents/sdk-python)
+- [uv - Fast Python Package Manager](https://docs.astral.sh/uv/)
 - [Build AI Systems Visually - AI/ML Companion](https://aimlcompanion.ai/)
 
 ---

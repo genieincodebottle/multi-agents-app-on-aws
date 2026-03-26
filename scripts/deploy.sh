@@ -18,7 +18,7 @@ NC='\033[0m'
 # Check agentcore CLI
 if ! command -v agentcore &> /dev/null; then
     echo -e "${YELLOW}AgentCore CLI not found. Installing...${NC}"
-    pip install bedrock-agentcore-starter-toolkit
+    uv pip install bedrock-agentcore-starter-toolkit
 fi
 
 cd deploy/agentcore
