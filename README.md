@@ -64,7 +64,16 @@ This project has two phases. **You don't need AWS to start.**
 
 Get the multi-agent system running on your machine in 4 steps. **No AWS account needed** - we'll use Groq's free API to start.
 
-### Step 1: Install Python and uv
+### Step 1: Install Prerequisites
+
+**Git** - Check if you have it:
+```bash
+git --version
+```
+If not installed:
+- **Windows**: Download from [git-scm.com/downloads/win](https://git-scm.com/downloads/win). Run installer with default options. Reopen your terminal after.
+- **Mac**: Run `xcode-select --install` in Terminal
+- **Linux**: `sudo apt update && sudo apt install git`
 
 **Python 3.10+** - Check if you have it:
 ```bash
@@ -88,18 +97,36 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 pip install uv
 ```
 
+> **Which terminal to use?** Windows: open **PowerShell** (search "PowerShell" in Start menu). Mac: open **Terminal**. Linux: any terminal.
+
 ### Step 2: Clone and Install
 
 ```bash
 git clone https://github.com/genieincodebottle/multi-agents-app-on-aws.git
 cd multi-agents-app-on-aws
+```
 
-# Create virtual environment
+Create a virtual environment (keeps this project's packages separate from your system Python):
+```bash
 uv venv
-.venv\Scripts\activate           # Windows
-# source .venv/bin/activate      # Mac/Linux
+```
 
-# Install dependencies
+Activate it:
+```bash
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+
+# Windows (Command Prompt)
+.venv\Scripts\activate.bat
+
+# Mac / Linux
+source .venv/bin/activate
+```
+
+> You should see `(.venv)` at the start of your terminal prompt. This means the virtual environment is active.
+
+Install dependencies:
+```bash
 uv pip install -r requirements.txt
 uv pip install groq
 ```
@@ -113,10 +140,14 @@ uv pip install groq
 
 Now create your config file:
 ```bash
+# Windows (PowerShell or Command Prompt)
+copy .env.example .env
+
+# Mac / Linux
 cp .env.example .env
 ```
 
-Open `.env` in any text editor and set these two lines:
+Open `.env` in any text editor (Notepad, VS Code, etc.) and set these two lines:
 ```
 LLM_PROVIDER=groq
 GROQ_API_KEY=gsk_paste_your_key_here
@@ -564,7 +595,9 @@ def my_tool(param: str) -> str:
 | `NoCredentialsError` | Run `aws configure` or set `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` |
 | `ThrottlingException` | You've hit rate limits. Wait a moment or request limit increase |
 | Web search returns empty | Get a free Tavily API key at [tavily.com](https://tavily.com) and set `TAVILY_API_KEY` |
-| `uv: command not found` | Install uv: see [Step 1](#step-1-install-python-and-uv) |
+| `uv: command not found` | Install uv: see [Step 1](#step-1-install-prerequisites) |
+| `.ps1 cannot be loaded because running scripts is disabled` | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` in PowerShell, then try again |
+| `(.venv) not showing in terminal` | You forgot to activate. Run `.venv\Scripts\Activate.ps1` (Windows) or `source .venv/bin/activate` (Mac/Linux) |
 
 ---
 
