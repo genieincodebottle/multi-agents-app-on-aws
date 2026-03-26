@@ -41,7 +41,19 @@ A multi-agent system where 4 AI agents collaborate to research any topic and pro
 
 ---
 
-## Quick Start (5 Minutes)
+## Two Learning Phases
+
+> **Phase 1 - Learn locally (free, no AWS needed):**
+> Use Groq or Gemini as your LLM provider. Build, test, and understand how multi-agent systems work - all on your local machine with a free API key.
+>
+> **Phase 2 - Deploy to production (AWS required):**
+> When you're ready, deploy your agents to AWS Bedrock AgentCore. This gives you auto-scaling, persistent memory, and production-grade Claude Sonnet 4. AgentCore deployment requires an AWS account with Bedrock access.
+>
+> **Start with Phase 1.** You can always add AWS later.
+
+---
+
+## Quick Start (5 Minutes) - Phase 1
 
 Get the multi-agent system running on your machine in 4 steps. **No AWS account needed** - we'll use Groq's free API to start.
 
@@ -217,11 +229,13 @@ For Bedrock setup, see [AWS Setup Guide](#aws-setup-guide) below.
 
 ---
 
-## Deploy to AWS (AgentCore)
+## Deploy to AWS (AgentCore) - Phase 2
 
-Once you've tested locally, you can deploy to AWS AgentCore for production use. This gives you auto-scaling, persistent memory, and per-second billing.
+Once you've tested locally with Groq/Gemini, you can deploy to AWS AgentCore for production use. This gives you auto-scaling, persistent memory, and per-second billing.
 
-> **Note:** Deployment requires AWS Bedrock as the provider. See [AWS Setup Guide](#aws-setup-guide) if you haven't set up AWS yet.
+> **Why AWS for deployment?** AgentCore runs each agent in an isolated microVM with auto-scaling, persistent conversation memory, and A2A (Agent-to-Agent) protocol support. These are production features that don't exist in local mode. You need an AWS account with Bedrock access for this phase.
+>
+> See [AWS Setup Guide](#aws-setup-guide) if you haven't set up AWS yet.
 
 **AWS Services Used:**
 - **Bedrock AgentCore Runtime** - Serverless agent hosting (auto-scales, per-second billing)
@@ -406,7 +420,7 @@ BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-20250514-v1:0
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `LLM_PROVIDER` | `bedrock` | LLM provider: `groq`, `gemini`, or `bedrock` |
+| `LLM_PROVIDER` | `groq` | LLM provider: `groq`, `gemini`, or `bedrock` |
 | `GROQ_API_KEY` | | Groq API key ([console.groq.com/keys](https://console.groq.com/keys)) |
 | `GROQ_MODEL_ID` | `llama-3.3-70b-versatile` | Groq model ID |
 | `GEMINI_API_KEY` | | Gemini API key ([aistudio.google.com/apikey](https://aistudio.google.com/apikey)) |
