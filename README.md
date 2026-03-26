@@ -199,6 +199,63 @@ You should see something like:
 
 > **Can't find Claude?** Make sure you're in the **us-east-1** region (check the top-right dropdown in the AWS Console). If Claude is unavailable, you can use **Amazon Nova Lite** instead - it's always available and much cheaper. Just change the model in `.env` later.
 
+> **Don't want AWS billing?** You can skip Steps 4-7 entirely and use **Groq** or **Gemini** instead - both have free tiers. See [Free Alternatives](#free-alternatives-no-aws-needed) below.
+
+---
+
+## Free Alternatives (No AWS Needed)
+
+Don't have an AWS account or want to avoid billing? Use **Groq** or **Gemini** - both have generous free tiers.
+
+### Option A: Groq (Free - Llama 3.3 70B)
+
+1. Go to [console.groq.com/keys](https://console.groq.com/keys) and sign up (Google/GitHub login)
+2. Click **"Create API Key"**, copy it
+3. Install the Groq package:
+   ```bash
+   uv pip install groq
+   ```
+4. Set in your `.env`:
+   ```
+   LLM_PROVIDER=groq
+   GROQ_API_KEY=gsk_your_key_here
+   GROQ_MODEL_ID=llama-3.3-70b-versatile
+   ```
+
+**Free tier:** 30 requests/minute, 14,400 requests/day. More than enough for testing.
+
+**Available models:** `llama-3.3-70b-versatile` (best), `llama-3.1-8b-instant` (fastest), `gemma2-9b-it`, `mixtral-8x7b-32768`
+
+### Option B: Gemini (Free - Gemini 2.0 Flash)
+
+1. Go to [aistudio.google.com/apikey](https://aistudio.google.com/apikey) and sign in with Google
+2. Click **"Create API Key"**, copy it
+3. Install the Gemini package:
+   ```bash
+   uv pip install google-genai
+   ```
+4. Set in your `.env`:
+   ```
+   LLM_PROVIDER=gemini
+   GEMINI_API_KEY=your_key_here
+   GEMINI_MODEL_ID=gemini-2.0-flash
+   ```
+
+**Free tier:** 15 requests/minute, 1,500 requests/day. Great for development and testing.
+
+**Available models:** `gemini-2.0-flash` (fast, free), `gemini-2.5-flash` (smarter), `gemini-2.5-pro` (best quality)
+
+### Provider Comparison
+
+| Provider | Cost | Setup Time | Best Model | Quality |
+|----------|------|-----------|------------|---------|
+| **Groq** | Free | 2 min | Llama 3.3 70B | Good |
+| **Gemini** | Free | 2 min | Gemini 2.0 Flash | Good |
+| **Bedrock (Nova Lite)** | ~$0.001/request | 15 min | Nova Lite | Good |
+| **Bedrock (Claude Sonnet 4)** | ~$0.01-0.04/request | 15 min | Claude Sonnet 4 | Best |
+
+> **Recommendation:** Start with **Groq** (fastest setup, best free model). Switch to **Bedrock + Claude Sonnet 4** when you want production quality.
+
 ---
 
 ## Quick Start (Local Development)
@@ -331,8 +388,13 @@ terraform output
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `AWS_REGION` | `us-east-1` | AWS region for all services |
-| `BEDROCK_MODEL_ID` | `us.anthropic.claude-sonnet-4-20250514-v1:0` | Foundation model for agents |
+| `LLM_PROVIDER` | `bedrock` | LLM provider: `bedrock`, `groq`, or `gemini` |
+| `AWS_REGION` | `us-east-1` | AWS region (Bedrock only) |
+| `BEDROCK_MODEL_ID` | `us.anthropic.claude-sonnet-4-20250514-v1:0` | Bedrock model ID |
+| `GROQ_API_KEY` | (empty) | Groq API key ([console.groq.com/keys](https://console.groq.com/keys)) |
+| `GROQ_MODEL_ID` | `llama-3.3-70b-versatile` | Groq model ID |
+| `GEMINI_API_KEY` | (empty) | Gemini API key ([aistudio.google.com/apikey](https://aistudio.google.com/apikey)) |
+| `GEMINI_MODEL_ID` | `gemini-2.0-flash` | Gemini model ID |
 | `TAVILY_API_KEY` | (optional) | Web search API key ([tavily.com](https://tavily.com) - free tier: 1000 searches/month) |
 | `LOG_LEVEL` | `INFO` | Logging verbosity (DEBUG, INFO, WARNING, ERROR) |
 | `MAX_RESEARCH_RESULTS` | `5` | Number of web search results per query |
