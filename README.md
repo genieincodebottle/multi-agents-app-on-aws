@@ -74,6 +74,8 @@ If you see `Python 3.10.x` or higher, skip to Step 2.
 4. **Mac**: Run the `.pkg` installer
 5. **Linux**: `sudo apt update && sudo apt install python3 python3-pip` (Ubuntu/Debian) or `sudo dnf install python3` (Fedora)
 
+> **Windows users**: After installing, close and reopen your terminal (Command Prompt or PowerShell) for `python` to be recognized.
+
 **Verify:**
 ```bash
 python --version   # Should show Python 3.10+
@@ -84,11 +86,11 @@ python --version   # Should show Python 3.10+
 [uv](https://docs.astral.sh/uv/) is a blazing-fast Python package manager written in Rust. It replaces `pip` and `venv` with a single tool.
 
 ```bash
-# Linux / Mac
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
 # Windows (PowerShell)
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Mac / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Or with pip (any platform)
 pip install uv
@@ -109,7 +111,7 @@ aws --version   # Should show aws-cli/2.x.x
 If you see version 2.x, skip to Step 4.
 
 **Install AWS CLI v2:**
-- **Windows**: Download and run [AWSCLIV2.msi](https://awscli.amazonaws.com/AWSCLIV2.msi)
+- **Windows**: Download and run [AWSCLIV2.msi](https://awscli.amazonaws.com/AWSCLIV2.msi). After installing, close and reopen your terminal.
 - **Mac**: Download and run [AWSCLIV2.pkg](https://awscli.amazonaws.com/AWSCLIV2.pkg)
 - **Linux**:
   ```bash
@@ -209,8 +211,8 @@ cd multi-agents-app-on-aws
 
 # Create virtual environment and install dependencies
 uv venv
-source .venv/bin/activate        # Linux/Mac
-# .venv\Scripts\activate          # Windows
+.venv\Scripts\activate           # Windows
+# source .venv/bin/activate      # Mac/Linux
 
 # Install dependencies
 uv pip install -r requirements.txt
