@@ -89,7 +89,7 @@ aws configure
 ### Step 3: Enable Bedrock Models
 
 Go to [Amazon Bedrock Model Access](https://console.aws.amazon.com/bedrock/home#/modelaccess) and enable:
-- **Anthropic Claude Sonnet 4** (`us.anthropic.claude-sonnet-4-20250514`)
+- **Anthropic Claude Sonnet 4** (`us.anthropic.claude-sonnet-4-20250514-v1:0`)
 
 > Model access approval is instant for most models. If Claude is not available in your region, you can change the model in `.env` (see Configuration section).
 
@@ -103,21 +103,33 @@ cp .env.example .env
 ### Step 5: Run Locally
 
 ```bash
-# Option A: Run the orchestrator (all agents in one process)
-python -m agents.orchestrator
+# Option A: Quick test from command line
+python -m agents.orchestrator --query "Compare Python vs Rust for AI development"
 
-# Option B: Run the Streamlit UI
-cd ui
-pip install -r requirements.txt
-streamlit run app.py
+# Option B: Run the Streamlit UI (web interface)
+pip install -r ui/requirements.txt
+streamlit run ui/app.py
 ```
+
+> **First run slow?** The first Bedrock API call may take 5-10 seconds (cold start). Subsequent calls are faster.
+
+> **Billing error?** If you see `INVALID_PAYMENT_INSTRUMENT`, add a payment method at [AWS Billing Console](https://console.aws.amazon.com/billing/) and retry after 2 minutes.
 
 ### Step 6: Test It
 
 ```bash
-# Quick test from command line
-python -m agents.orchestrator --query "Compare Python vs Rust for AI development"
+# Test with a simple query
+python -m agents.orchestrator --query "What is machine learning?"
+
+# Use verbose mode to see each agent's output
+python -m agents.orchestrator --query "What is machine learning?" --verbose
 ```
+
+> **Want to save money?** Use Amazon Nova Lite (10x cheaper) by editing `.env`:
+> ```
+> BEDROCK_MODEL_ID=us.amazon.nova-lite-v1:0
+> ```
+> Nova Lite works great for testing. Switch to Claude Sonnet for production quality.
 
 ---
 
@@ -195,7 +207,7 @@ terraform output
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AWS_REGION` | `us-east-1` | AWS region for all services |
-| `BEDROCK_MODEL_ID` | `us.anthropic.claude-sonnet-4-20250514` | Foundation model for agents |
+| `BEDROCK_MODEL_ID` | `us.anthropic.claude-sonnet-4-20250514-v1:0` | Foundation model for agents |
 | `TAVILY_API_KEY` | (optional) | Web search API key ([tavily.com](https://tavily.com) - free tier: 1000 searches/month) |
 | `LOG_LEVEL` | `INFO` | Logging verbosity (DEBUG, INFO, WARNING, ERROR) |
 | `MAX_RESEARCH_RESULTS` | `5` | Number of web search results per query |
@@ -206,7 +218,7 @@ terraform output
 
 | Model | Model ID | Cost (Input/Output per 1M tokens) |
 |-------|----------|-----------------------------------|
-| Claude Sonnet 4 (default) | `us.anthropic.claude-sonnet-4-20250514` | $3.00 / $15.00 |
+| Claude Sonnet 4 (default) | `us.anthropic.claude-sonnet-4-20250514-v1:0` | $3.00 / $15.00 |
 | Claude Haiku 4.5 | `us.anthropic.claude-haiku-4-5-20251001` | $0.80 / $4.00 |
 | Amazon Nova Pro | `us.amazon.nova-pro-v1:0` | $0.80 / $3.20 |
 | Amazon Nova Lite | `us.amazon.nova-lite-v1:0` | $0.06 / $0.24 |
@@ -386,7 +398,7 @@ from strands import Agent
 from strands.models.bedrock import BedrockModel
 
 agent = Agent(
-    model=BedrockModel(model_id="us.anthropic.claude-sonnet-4-20250514"),
+    model=BedrockModel(model_id="us.anthropic.claude-sonnet-4-20250514-v1:0"),
     system_prompt="You are a research specialist.",
     tools=[web_search, calculator],
 )
@@ -398,7 +410,7 @@ result = agent("Research AI frameworks")
 from langgraph.prebuilt import create_react_agent
 from langchain_aws import ChatBedrockConverse
 
-model = ChatBedrockConverse(model_id="us.anthropic.claude-sonnet-4-20250514")
+model = ChatBedrockConverse(model_id="us.anthropic.claude-sonnet-4-20250514-v1:0")
 agent = create_react_agent(model, tools=[web_search, calculator])
 result = agent.invoke({"messages": [("user", "Research AI frameworks")]})
 ```

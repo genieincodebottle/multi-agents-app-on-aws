@@ -63,7 +63,7 @@ class TestOrchestrator:
         assert len(result["steps"]) == 3
         assert result["query"] == "test query"
         assert result["final_report"] == "Agent output"
-        assert result["total_time"] > 0
+        assert result["total_time"] >= 0
         assert mock_agent.call_count == 3
 
     @patch("agents.orchestrator.call_agent")

@@ -99,7 +99,7 @@ fi
 echo ""
 echo "Checking Bedrock model access..."
 
-MODEL_ID="us.anthropic.claude-sonnet-4-20250514"
+MODEL_ID="us.anthropic.claude-sonnet-4-20250514-v1:0"
 if aws bedrock get-foundation-model --model-identifier "$MODEL_ID" --region "$AWS_REGION" &> /dev/null; then
     echo -e "  ${GREEN}✓${NC} Bedrock model access confirmed ($MODEL_ID)"
 else
