@@ -48,7 +48,7 @@ This project has two phases. **You don't need AWS to start.**
 | | Phase 1 - Learn Locally | Phase 2 - Deploy to AWS |
 |--|------------------------|------------------------|
 | **What** | Run all agents on your laptop as a single Python process | Deploy each agent to AWS Bedrock AgentCore (serverless microVMs) |
-| **LLM Provider** | Groq or Gemini (free API key) | AWS Bedrock (Claude Sonnet 4, pay-per-use) |
+| **LLM Provider** | Groq or Gemini (free API key) | AWS Bedrock recommended (Claude Sonnet 4), but Groq/Gemini also work |
 | **AgentCore** | Not used | Used - each agent runs in its own isolated microVM |
 | **AWS Account** | Not needed | Required (with Bedrock model access) |
 | **Agent Communication** | Direct Python function calls | A2A protocol over HTTPS |
