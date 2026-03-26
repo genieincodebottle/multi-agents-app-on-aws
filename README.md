@@ -35,30 +35,9 @@ A multi-agent system where 4 AI agents collaborate to research any topic and pro
 
 ## Architecture
 
-```
-                    +------------------+
-                    |    Streamlit UI  |
-                    |   (Your Browser) |
-                    +--------+---------+
-                             |
-                             v
-                    +------------------+
-                    |   Orchestrator   |  <-- Breaks down task, coordinates agents
-                    |   (Supervisor)   |
-                    +--------+---------+
-                             |
-              +--------------+--------------+
-              |              |              |
-              v              v              v
-     +--------+----+  +-----+------+  +----+--------+
-     |  Research   |  |  Analyst   |  |   Writer    |
-     |   Agent     |  |   Agent    |  |   Agent     |
-     +--------+----+  +-----+------+  +----+--------+
-              |              |              |
-              v              v              v
-        Web Search      Bedrock LLM    Bedrock LLM
-        + Bedrock       (Analysis)     (Writing)
-```
+<div align="center">
+<img src="./images/architecture.svg" alt="Multi-Agent System Architecture" width="800"/>
+</div>
 
 **AWS Services Used:**
 - **Bedrock AgentCore Runtime** - Serverless agent hosting (auto-scales, per-second billing)
