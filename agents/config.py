@@ -24,7 +24,7 @@ else:
 # ---------------------------------------------------------------------------
 
 # LLM Provider: "bedrock" (default), "groq", or "gemini"
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "bedrock").lower()
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()
 
 # Provider-specific settings
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
