@@ -97,6 +97,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 pip install uv
 ```
 
+> **After installing each tool, close and reopen your terminal** so the new commands are available.
+
 > **Which terminal to use?** Windows: open **PowerShell** (search "PowerShell" in Start menu). Mac: open **Terminal**. Linux: any terminal.
 
 ### Step 2: Clone and Install
@@ -127,8 +129,8 @@ source .venv/bin/activate
 
 Install dependencies:
 ```bash
-uv pip install -r requirements.txt
-uv pip install groq
+uv pip install -r requirements.txt   # installs core dependencies
+uv pip install groq                  # installs Groq LLM provider
 ```
 
 ### Step 3: Get a Free Groq API Key (2 Minutes)
@@ -159,6 +161,9 @@ That's it. Save the file.
 
 ```bash
 python -m agents.orchestrator --query "What is machine learning?"
+
+# If "python" is not found, try "python3" (common on Mac/Linux)
+python3 -m agents.orchestrator --query "What is machine learning?"
 ```
 
 You should see output like:
@@ -246,6 +251,10 @@ Best quality with Claude Sonnet 4. Requires an AWS account with billing enabled.
 | **Setup time** | 15 minutes |
 | **Best model** | Claude Sonnet 4 |
 | **Cheapest model** | Nova Lite (~$0.001/request) |
+
+```bash
+uv pip install boto3 botocore
+```
 
 ```env
 LLM_PROVIDER=bedrock
@@ -595,7 +604,8 @@ def my_tool(param: str) -> str:
 | `NoCredentialsError` | Run `aws configure` or set `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` |
 | `ThrottlingException` | You've hit rate limits. Wait a moment or request limit increase |
 | Web search returns empty | Get a free Tavily API key at [tavily.com](https://tavily.com) and set `TAVILY_API_KEY` |
-| `uv: command not found` | Install uv: see [Step 1](#step-1-install-prerequisites) |
+| `python: command not found` | Try `python3` instead (common on Mac/Linux). Or reinstall Python and check "Add to PATH" |
+| `uv: command not found` | Install uv: see [Step 1](#step-1-install-prerequisites). Reopen terminal after installing |
 | `.ps1 cannot be loaded because running scripts is disabled` | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` in PowerShell, then try again |
 | `(.venv) not showing in terminal` | You forgot to activate. Run `.venv\Scripts\Activate.ps1` (Windows) or `source .venv/bin/activate` (Mac/Linux) |
 
