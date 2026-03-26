@@ -52,6 +52,8 @@ A multi-agent system where 4 AI agents collaborate to research any topic and pro
 
 ## Prerequisites Setup (Do This First)
 
+> **Already have Python 3.10+, uv, AWS CLI, and configured credentials?** Skip to [Quick Start](#quick-start-local-development).
+
 Follow each step below. By the end, you'll have everything needed to run the project.
 
 ### Step 1: Install Python 3.10+
