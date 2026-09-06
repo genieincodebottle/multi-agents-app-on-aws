@@ -28,11 +28,21 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()
 
 # Provider-specific settings
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
-BEDROCK_MODEL_ID = os.getenv("BEDROCK_MODEL_ID", "us.anthropic.claude-sonnet-4-20250514-v1:0")
+
+# Every default below was retired or closed to new accounts, which meant a
+# fresh clone failed on its first call rather than degrading:
+#   - llama-3.3-70b-versatile: shut down for the free and developer tiers.
+#     Since Groq is the DEFAULT provider, this broke the "free to run" path.
+#   - gemini-2.0-flash: retired. Rolling aliases cannot rot the same way.
+#   - claude-sonnet-4-20250514: Legacy on Bedrock (EOL 14 Oct 2026), and new
+#     accounts cannot use Legacy models at all.
+BEDROCK_MODEL_ID = os.getenv(
+    "BEDROCK_MODEL_ID", "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+)
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL_ID = os.getenv("GROQ_MODEL_ID", "llama-3.3-70b-versatile")
+GROQ_MODEL_ID = os.getenv("GROQ_MODEL_ID", "openai/gpt-oss-120b")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL_ID = os.getenv("GEMINI_MODEL_ID", "gemini-2.0-flash")
+GEMINI_MODEL_ID = os.getenv("GEMINI_MODEL_ID", "gemini-flash-latest")
 
 # Resolve the active model ID based on provider
 if LLM_PROVIDER == "groq":

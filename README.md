@@ -227,16 +227,19 @@ The fastest option with a generous free tier. Already configured if you followed
 |--------|-------|
 | **Cost** | Free (30 req/min, 14,400 req/day) |
 | **Setup time** | 2 minutes |
-| **Best model** | `llama-3.3-70b-versatile` |
+| **Best model** | `openai/gpt-oss-120b` |
 | **Get API key** | [console.groq.com/keys](https://console.groq.com/keys) |
 
 ```env
 LLM_PROVIDER=groq
 GROQ_API_KEY=gsk_your_key_here
-GROQ_MODEL_ID=llama-3.3-70b-versatile
+GROQ_MODEL_ID=openai/gpt-oss-120b
 ```
 
-Other models: `llama-3.1-8b-instant` (fastest), `gemma2-9b-it`, `mixtral-8x7b-32768`
+Other models: `openai/gpt-oss-20b` (faster), `qwen/qwen3.6-27b`
+
+The llama, gemma and mixtral models this project used to name were shut
+down for the free and developer tiers and now return 404.
 
 ### Option 2: Gemini (Free)
 
@@ -246,7 +249,7 @@ Google's Gemini models, also with a free tier.
 |--------|-------|
 | **Cost** | Free (15 req/min, 1,500 req/day) |
 | **Setup time** | 2 minutes |
-| **Best model** | `gemini-2.0-flash` |
+| **Best model** | `gemini-flash-latest` |
 | **Get API key** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
 
 ```bash
@@ -256,10 +259,13 @@ uv pip install google-genai
 ```env
 LLM_PROVIDER=gemini
 GEMINI_API_KEY=your_key_here
-GEMINI_MODEL_ID=gemini-2.0-flash
+GEMINI_MODEL_ID=gemini-flash-latest
 ```
 
-Other models: `gemini-2.5-flash` (smarter), `gemini-2.5-pro` (best quality)
+Other models: `gemini-pro-latest` (best quality), `gemini-flash-lite-latest` (cheapest)
+
+These are rolling aliases. Pinned IDs retire: every `gemini-1.5-*` and
+`gemini-2.0-*` model is gone, and `gemini-2.5-pro` is closed to new users.
 
 ### Option 3: AWS Bedrock (Production-Grade)
 
@@ -278,7 +284,7 @@ uv pip install boto3 botocore
 
 ```env
 LLM_PROVIDER=bedrock
-BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-20250514-v1:0
+BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-5-20250929-v1:0
 ```
 
 For Bedrock setup, see [AWS Setup Guide](#aws-setup-guide) below.
@@ -459,7 +465,7 @@ You should see your account info. If you see an error, double-check your keys (t
 
 ```env
 LLM_PROVIDER=bedrock
-BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-20250514-v1:0
+BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-5-20250929-v1:0
 ```
 
 > **Want to save money?** Use `BEDROCK_MODEL_ID=us.amazon.nova-lite-v1:0` (10x cheaper, great for testing).
@@ -478,11 +484,11 @@ BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-20250514-v1:0
 |----------|---------|-------------|
 | `LLM_PROVIDER` | `groq` | LLM provider: `groq`, `gemini`, or `bedrock` |
 | `GROQ_API_KEY` | | Groq API key ([console.groq.com/keys](https://console.groq.com/keys)) |
-| `GROQ_MODEL_ID` | `llama-3.3-70b-versatile` | Groq model ID |
+| `GROQ_MODEL_ID` | `openai/gpt-oss-120b` | Groq model ID |
 | `GEMINI_API_KEY` | | Gemini API key ([aistudio.google.com/apikey](https://aistudio.google.com/apikey)) |
-| `GEMINI_MODEL_ID` | `gemini-2.0-flash` | Gemini model ID |
+| `GEMINI_MODEL_ID` | `gemini-flash-latest` | Gemini model ID |
 | `AWS_REGION` | `us-east-1` | AWS region (Bedrock only) |
-| `BEDROCK_MODEL_ID` | `us.anthropic.claude-sonnet-4-20250514-v1:0` | Bedrock model ID |
+| `BEDROCK_MODEL_ID` | `us.anthropic.claude-sonnet-4-5-20250929-v1:0` | Bedrock model ID |
 | `TAVILY_API_KEY` | (optional) | Web search API key ([tavily.com](https://tavily.com) - free tier: 1000 searches/month) |
 | `LOG_LEVEL` | `INFO` | Logging verbosity (DEBUG, INFO, WARNING, ERROR) |
 | `MAX_RESEARCH_RESULTS` | `5` | Number of web search results per query |
@@ -493,7 +499,7 @@ BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-20250514-v1:0
 
 | Model | Model ID | Cost (Input/Output per 1M tokens) |
 |-------|----------|-----------------------------------|
-| Claude Sonnet 4 | `us.anthropic.claude-sonnet-4-20250514-v1:0` | $3.00 / $15.00 |
+| Claude Sonnet 4.5 | `us.anthropic.claude-sonnet-4-5-20250929-v1:0` | $3.00 / $15.00 |
 | Claude Haiku 4.5 | `us.anthropic.claude-haiku-4-5-20251001` | $0.80 / $4.00 |
 | Amazon Nova Pro | `us.amazon.nova-pro-v1:0` | $0.80 / $3.20 |
 | Amazon Nova Lite | `us.amazon.nova-lite-v1:0` | $0.06 / $0.24 |
